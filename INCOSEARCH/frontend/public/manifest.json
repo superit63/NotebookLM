@@ -1,0 +1,16 @@
+{
+    "name": "INCOSEARCH",
+    "short_name": "INCOSEARCH",
+    "description": "Hệ thống tra cứu thông tin nội bộ INCOTEC",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#0284c7",
+    "icons": [
+        {
+            "src": "/icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        }
+    ]
+}

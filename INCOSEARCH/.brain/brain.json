@@ -1,0 +1,96 @@
+{
+  "project": {
+    "name": "INCOSEARCH",
+    "description": "webapp dùng trong mục đích tra cứu thông tin nội bộ về sản phẩm, tiêu chuẩn",
+    "created_at": "2026-02-02T10:28:55+07:00",
+    "status": "READY_FOR_DEPLOYMENT"
+  },
+  "tech_stack": {
+    "frontend": {
+      "framework": "Next.js 14",
+      "language": "TypeScript",
+      "styling": "TailwindCSS",
+      "state": "Zustand",
+      "deployment": "Netlify (Static Export)"
+    },
+    "backend": {
+      "framework": "Express.js",
+      "language": "TypeScript",
+      "database": "SQLite (Prisma ORM)",
+      "auth": "JWT",
+      "deployment": "VPS (PM2)"
+    },
+    "ai_engine": {
+      "service": "Google NotebookLM",
+      "integration": "notebooklm-mcp-cli"
+    }
+  },
+  "features": [
+    {
+      "name": "User Authentication",
+      "status": "complete",
+      "description": "JWT-based login with admin/user roles"
+    },
+    {
+      "name": "Chat Interface",
+      "status": "complete",
+      "description": "Real-time chat with AI through NotebookLM"
+    },
+    {
+      "name": "Admin Panel",
+      "status": "complete",
+      "description": "User management and document tracking"
+    },
+    {
+      "name": "Document Management",
+      "status": "complete",
+      "description": "Track and sync documents to NotebookLM"
+    }
+  ],
+  "decisions": [
+    {
+      "date": "2026-02-02",
+      "decision": "Use NotebookLM MCP CLI instead of local RAG",
+      "reason": "User preference, leverage Google's infrastructure"
+    },
+    {
+      "date": "2026-02-02",
+      "decision": "SQLite for database",
+      "reason": "Simple deployment, easy backup, sufficient for internal use"
+    },
+    {
+      "date": "2026-02-02",
+      "decision": "Static export for frontend",
+      "reason": "Free Netlify hosting, fast CDN delivery"
+    }
+  ],
+  "structure": {
+    "backend": {
+      "port": 3001,
+      "endpoints": {
+        "auth": "/api/auth/*",
+        "chats": "/api/chats/*",
+        "documents": "/api/documents/*",
+        "health": "/api/health"
+      }
+    },
+    "frontend": {
+      "pages": [
+        "/login",
+        "/chat",
+        "/admin"
+      ]
+    }
+  },
+  "credentials": {
+    "note": "CHANGE IN PRODUCTION!",
+    "admin": {
+      "username": "admin",
+      "password": "admin123"
+    },
+    "user": {
+      "username": "user",
+      "password": "user123"
+    }
+  }
+}

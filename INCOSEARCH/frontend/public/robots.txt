@@ -1,0 +1,6 @@
+/* 
+ * Robots.txt for INCOSEARCH
+ * Internal application - block all crawlers
+ */
+User-agent: *
+Disallow: /

@@ -1,0 +1,34 @@
+# INCOSEARCH Project Files
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+out/
+.next/
+
+# Environment files (contain secrets)
+.env
+.env.local
+.env.production
+
+# Database
+*.db
+*.db-journal
+backend/data/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Vendor (can be re-cloned)
+# vendor/
