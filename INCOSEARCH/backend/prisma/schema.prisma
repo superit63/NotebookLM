@@ -17,7 +17,7 @@ model User {
   id        String   @id @default(uuid())
   username  String   @unique
   password  String   // Hashed with bcrypt
-  role      Role     @default(USER)
+  role      String   @default("USER")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -25,10 +25,7 @@ model User {
   chats Chat[]
 }
 
-enum Role {
-  ADMIN
-  USER
-}
+
 
 // ============================================
 // CHAT & MESSAGES
@@ -64,23 +61,12 @@ model Document {
   id            String         @id @default(uuid())
   filename      String
   originalPath  String
-  category      DocumentCategory
-  status        DocumentStatus @default(PENDING)
+  category      String
+  status        String @default("PENDING")
   notebookSrcId String?        // Source ID in NotebookLM
   mergedIntoId  String?        // If merged into another file
   uploadedAt    DateTime       @default(now())
   syncedAt      DateTime?
 }
 
-enum DocumentCategory {
-  PRODUCT     // Sản phẩm công ty
-  COMPETITOR  // Sản phẩm đối thủ
-  GUIDELINE   // WHO, CDC guidelines
-}
 
-enum DocumentStatus {
-  PENDING  // Chờ sync lên NotebookLM
-  SYNCED   // Đã có trên NotebookLM
-  ERROR    // Lỗi khi sync
-  MERGED   // Đã gộp vào file khác
-}
