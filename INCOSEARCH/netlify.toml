@@ -1,19 +1,21 @@
 [build]
-  # Thiết lập thư mục gốc cho quá trình build
-  base = "frontend"
-  
-  # Lệnh chạy bên trong thư mục frontend (không cần cd hay npm install)
-  # Netlify sẽ tự động chạy npm install nếu thấy package.json trong thư mục base
-  command = "npm run build"
-  
-  # Thư mục chứa kết quả build (tính từ thư mục base)
-  # Nếu là Next.js (output: export), folder thường là "out"
-  publish = "out"
+
+  command = "cd frontend && npm install && npm run build"
+
+  publish = "frontend/out"
+
+
 
 [build.environment]
+
   NODE_VERSION = "20"
 
+
+
 [[redirects]]
+
   from = "/*"
+
   to = "/index.html"
+
   status = 200
