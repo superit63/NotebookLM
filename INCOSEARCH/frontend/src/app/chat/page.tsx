@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
 import { useChatStore } from '@/store/chat';
+import { ChatMessage } from '@/components/ChatMessage';
 import ReactMarkdown from 'react-markdown';
 
 export default function ChatPage() {
@@ -25,6 +26,7 @@ export default function ChatPage() {
     } = useChatStore();
 
     const [input, setInput] = useState('');
+    const [mode, setMode] = useState<'quick' | 'extended'>('quick');
     const [showSidebar, setShowSidebar] = useState(true);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -84,7 +86,7 @@ export default function ChatPage() {
 
         const message = input.trim();
         setInput('');
-        await sendMessage(chatId, message);
+        await sendMessage(chatId, message, mode);
     };
 
     const handleLogout = () => {
@@ -123,8 +125,8 @@ export default function ChatPage() {
                             key={chat.id}
                             onClick={() => handleSelectChat(chat.id)}
                             className={`group p-3 rounded-xl cursor-pointer mb-1 transition-all ${currentChat?.id === chat.id
-                                    ? 'bg-primary-50 border border-primary-200'
-                                    : 'hover:bg-gray-50'
+                                ? 'bg-primary-50 border border-primary-200'
+                                : 'hover:bg-gray-50'
                                 }`}
                         >
                             <div className="flex items-center justify-between">
@@ -243,39 +245,13 @@ export default function ChatPage() {
                     )}
 
                     {messages.map((message) => (
-                        <div
+                        <ChatMessage
                             key={message.id}
-                            className={`mb-4 message-enter ${message.role === 'user' ? 'flex justify-end' : ''}`}
-                        >
-                            <div
-                                className={`max-w-3xl rounded-2xl px-4 py-3 ${message.role === 'user'
-                                        ? 'bg-primary-600 text-white'
-                                        : 'bg-white border border-gray-200 shadow-sm'
-                                    }`}
-                            >
-                                {message.role === 'assistant' ? (
-                                    <div className="markdown-content">
-                                        <ReactMarkdown>{message.content}</ReactMarkdown>
-                                    </div>
-                                ) : (
-                                    <p>{message.content}</p>
-                                )}
-
-                                {/* Citations */}
-                                {message.citations && (
-                                    <div className="mt-3 pt-3 border-t border-gray-100">
-                                        <p className="text-xs text-gray-400 mb-2">Nguồn tham khảo:</p>
-                                        <div className="text-xs text-gray-500">
-                                            {JSON.parse(message.citations).map((citation: any, index: number) => (
-                                                <span key={index} className="inline-block bg-gray-100 px-2 py-1 rounded mr-2 mb-1">
-                                                    [{index + 1}] {citation.sourceName || citation.source}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+                            role={message.role}
+                            content={message.content}
+                            citations={message.citations}
+                            timestamp={message.createdAt ? new Date(message.createdAt) : undefined}
+                        />
                     ))}
 
                     {/* Loading indicator */}
@@ -311,6 +287,26 @@ export default function ChatPage() {
                 {/* Input Area */}
                 <div className="p-4 bg-white border-t border-gray-200">
                     <form onSubmit={handleSend} className="max-w-4xl mx-auto">
+                        <div className="flex justify-center mb-3">
+                            <div className="bg-gray-100 p-1 rounded-lg inline-flex items-center">
+                                <button
+                                    type="button"
+                                    onClick={() => setMode('quick')}
+                                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${mode === 'quick' ? 'bg-white shadow text-primary-600' : 'text-gray-500 hover:text-gray-700'
+                                        }`}
+                                >
+                                    Tìm nhanh (Quick)
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setMode('extended')}
+                                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${mode === 'extended' ? 'bg-white shadow text-primary-600' : 'text-gray-500 hover:text-gray-700'
+                                        }`}
+                                >
+                                    Nghiên cứu sâu (Extended)
+                                </button>
+                            </div>
+                        </div>
                         <div className="flex items-center gap-3 bg-gray-50 rounded-2xl px-4 py-3 border border-gray-200 focus-within:border-primary-300 focus-within:ring-2 focus-within:ring-primary-100 transition-all">
                             <input
                                 type="text"

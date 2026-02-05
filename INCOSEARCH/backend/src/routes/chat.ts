@@ -117,7 +117,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
 router.post('/:id/messages', async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { content } = req.body;
+        const { content, mode = 'quick' } = req.body;
 
         if (!content || content.trim() === '') {
             return res.status(400).json({ error: 'Vui lòng nhập nội dung câu hỏi.' });
@@ -144,7 +144,7 @@ router.post('/:id/messages', async (req: Request, res: Response) => {
         // Query NotebookLM
         let aiResponse: { answer: string; citations?: string };
         try {
-            aiResponse = await notebookLMService.query(content.trim());
+            aiResponse = await notebookLMService.query(content.trim(), undefined, chat.notebookConversationId || undefined, mode);
         } catch (nlmError) {
             console.error('NotebookLM error:', nlmError);
             aiResponse = {

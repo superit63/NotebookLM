@@ -70,6 +70,20 @@ router.get('/stats', async (req: Request, res: Response) => {
 });
 
 /**
+ * GET /api/documents/notebooks
+ * List all notebooks from NotebookLM (Admin only)
+ */
+router.get('/notebooks', requireAdmin, async (req: Request, res: Response) => {
+    try {
+        const notebooks = await notebookLMService.listNotebooks();
+        res.json({ notebooks });
+    } catch (error) {
+        console.error('List notebooks error:', error);
+        res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách sổ tay.' });
+    }
+});
+
+/**
  * POST /api/documents
  * Add a new document record (Admin only)
  * Note: Actual file upload handled separately

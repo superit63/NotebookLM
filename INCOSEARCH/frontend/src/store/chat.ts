@@ -34,7 +34,7 @@ interface ChatState {
     fetchChat: (chatId: string) => Promise<void>;
     createChat: () => Promise<string | null>;
     deleteChat: (chatId: string) => Promise<void>;
-    sendMessage: (chatId: string, content: string) => Promise<void>;
+    sendMessage: (chatId: string, content: string, mode?: 'quick' | 'extended') => Promise<void>;
     setCurrentChat: (chat: Chat | null) => void;
     clearError: () => void;
 }
@@ -113,7 +113,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
         }
     },
 
-    sendMessage: async (chatId: string, content: string) => {
+    sendMessage: async (chatId: string, content: string, mode: 'quick' | 'extended' = 'quick') => {
         set({ isSending: true, error: null });
 
         // Optimistic update: add user message immediately
@@ -129,7 +129,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
         }));
 
         try {
-            const response = await api.post(`/chats/${chatId}/messages`, { content });
+            const response = await api.post(`/chats/${chatId}/messages`, { content, mode });
             const { userMessage, assistantMessage } = response.data;
 
             set((state) => ({

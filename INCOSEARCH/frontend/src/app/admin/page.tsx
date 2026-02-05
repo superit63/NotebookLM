@@ -25,9 +25,10 @@ export default function AdminPage() {
     const router = useRouter();
     const { user, isAuthenticated, checkAuth } = useAuthStore();
 
-    const [activeTab, setActiveTab] = useState<'documents' | 'users'>('documents');
+    const [activeTab, setActiveTab] = useState<'documents' | 'users' | 'notebook'>('documents');
     const [documents, setDocuments] = useState<Document[]>([]);
     const [users, setUsers] = useState<User[]>([]);
+    const [notebooks, setNotebooks] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -63,9 +64,12 @@ export default function AdminPage() {
             if (activeTab === 'documents') {
                 const response = await api.get<{ documents: Document[] }>('/documents');
                 setDocuments(response.data.documents);
-            } else {
+            } else if (activeTab === 'users') {
                 const response = await api.get<{ users: User[] }>('/auth/users');
                 setUsers(response.data.users);
+            } else if (activeTab === 'notebook') {
+                const response = await api.get<{ notebooks: any[] }>('/documents/notebooks');
+                setNotebooks(response.data.notebooks);
             }
         } catch (err: any) {
             setError(err.response?.data?.error || 'Không thể tải dữ liệu');
@@ -173,8 +177,8 @@ export default function AdminPage() {
                     <button
                         onClick={() => setActiveTab('documents')}
                         className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === 'documents'
-                                ? 'bg-primary-600 text-white'
-                                : 'bg-white text-gray-600 hover:bg-gray-100'
+                            ? 'bg-primary-600 text-white'
+                            : 'bg-white text-gray-600 hover:bg-gray-100'
                             }`}
                     >
                         📄 Tài liệu
@@ -182,11 +186,20 @@ export default function AdminPage() {
                     <button
                         onClick={() => setActiveTab('users')}
                         className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === 'users'
-                                ? 'bg-primary-600 text-white'
-                                : 'bg-white text-gray-600 hover:bg-gray-100'
+                            ? 'bg-primary-600 text-white'
+                            : 'bg-white text-gray-600 hover:bg-gray-100'
                             }`}
                     >
                         👥 Người dùng
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('notebook')}
+                        className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === 'notebook'
+                            ? 'bg-primary-600 text-white'
+                            : 'bg-white text-gray-600 hover:bg-gray-100'
+                            }`}
+                    >
+                        📚 NotebookLM
                     </button>
                 </div>
 
@@ -356,6 +369,45 @@ export default function AdminPage() {
                                                         </button>
                                                     )}
                                                 </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Notebooks Tab */}
+                {activeTab === 'notebook' && (
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+                            <h2 className="font-semibold text-gray-800">Danh sách Sổ tay (Notebooks)</h2>
+                            <span className="text-sm text-gray-500">{notebooks.length} sổ tay</span>
+                        </div>
+
+                        {isLoading ? (
+                            <div className="p-8 text-center text-gray-500">Đang tải...</div>
+                        ) : notebooks.length === 0 ? (
+                            <div className="p-8 text-center text-gray-500">Chưa có dữ liệu từ NotebookLM</div>
+                        ) : (
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead className="bg-gray-50">
+                                        <tr>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
+                                            <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Sources (Src)</th>
+                                            <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Updated</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100">
+                                        {notebooks.map((nb: any, i) => (
+                                            <tr key={nb.id || i} className="hover:bg-gray-50">
+                                                <td className="px-4 py-3 text-sm font-mono text-gray-500">{nb.id}</td>
+                                                <td className="px-4 py-3 text-sm text-gray-700 font-medium">{nb.title || '(No title)'}</td>
+                                                <td className="px-4 py-3 text-sm text-gray-600 text-center">{nb.sourceCount}</td>
+                                                <td className="px-4 py-3 text-sm text-gray-500 text-right">{nb.updated}</td>
                                             </tr>
                                         ))}
                                     </tbody>
